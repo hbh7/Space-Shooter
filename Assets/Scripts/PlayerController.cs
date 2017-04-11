@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class Boundary {
+public class Boundary
+{
     public float xMin, xMax, zMin, zMax;
 }
 
-public class PlayerController : MonoBehaviour {
+public class PlayerController : MonoBehaviour
+{
 
     private new Rigidbody rigidbody { get { return GetComponent<Rigidbody>(); } }
-	private new AudioSource audioSource { get { return GetComponent<AudioSource>(); } }
+    private AudioSource audioSource { get { return GetComponent<AudioSource>(); } }
     public float speed;
     public float tilt;
     public Boundary boundary;
@@ -51,6 +53,6 @@ public class PlayerController : MonoBehaviour {
                 Mathf.Clamp(rigidbody.position.z, boundary.zMin, boundary.zMax)
             );
 
-        rigidbody.rotation = Quaternion.Euler (0.0f, 0.0f, rigidbody.velocity.x * -tilt);
+        rigidbody.rotation = Quaternion.Euler(0.0f, 0.0f, rigidbody.velocity.x * -tilt);
     }
 }
