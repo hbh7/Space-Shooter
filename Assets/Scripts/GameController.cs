@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class GameController : MonoBehaviour {
 
     public GameObject[] hazards;
+    public GameObject RollaBall;
     public Vector3 spawnValues;
     public int hazardCount;
     public float spawnWait;
@@ -50,9 +51,30 @@ public class GameController : MonoBehaviour {
             for (int i = 0; i < hazardCount; i++)
             {
                 GameObject hazard = hazards[Random.Range(0,hazards.Length)]; 
-                Vector3 spawnPosition = new Vector3(Random.Range(-spawnValues.x, spawnValues.x), spawnValues.y, spawnValues.z);
-                Quaternion spawnRotation = Quaternion.identity;
-                Instantiate(hazard, spawnPosition, spawnRotation);
+                if (hazard == RollaBall)
+                {
+                    if (Random.Range(1,10) == 1)
+                    {
+                        Vector3 spawnPosition = new Vector3(Random.Range(-spawnValues.x, spawnValues.x), spawnValues.y, spawnValues.z);
+                        Quaternion spawnRotation = Quaternion.identity;
+                        Instantiate(hazard, spawnPosition, spawnRotation);
+                    }
+                    else
+                    {
+                        hazard = hazards[Random.Range(0, hazards.Length)];
+                        Vector3 spawnPosition = new Vector3(Random.Range(-spawnValues.x, spawnValues.x), spawnValues.y, spawnValues.z);
+                        Quaternion spawnRotation = Quaternion.identity;
+                        Instantiate(hazard, spawnPosition, spawnRotation);
+                        yield return new WaitForSeconds(spawnWait);
+                    }
+
+                }
+                else
+                {
+                    Vector3 spawnPosition = new Vector3(Random.Range(-spawnValues.x, spawnValues.x), spawnValues.y, spawnValues.z);
+                    Quaternion spawnRotation = Quaternion.identity;
+                    Instantiate(hazard, spawnPosition, spawnRotation);
+                }
                 yield return new WaitForSeconds(spawnWait);
             }
             yield return new WaitForSeconds(waveWait);

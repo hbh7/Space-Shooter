@@ -9,7 +9,7 @@ public class MoverRollABall : MonoBehaviour {
 
     void Start()
     {
-        int[] Angles = new int[2] { Random.Range(-60, -40), Random.Range(40, 60) };
+        int[] Angles = new int[2] { Random.Range(-40, -20), Random.Range(20, 40) };
         int RandomIndex = Random.Range(0, 2);
 
         Debug.Log(Angles);
