@@ -1,33 +1,41 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour {
 
     public GameObject[] hazards;
     public GameObject RollaBall;
+    public GameObject Player;
     public Vector3 spawnValues;
     public int hazardCount;
     public float spawnWait;
     public float startWait;
     public float waveWait;
+    public float level;
 
-	public GUIText scoreText;
-    public GUIText restartText;
-    public GUIText gameOverText;
+	public Text scoreText;
+    public Text levelText;
+    public Text gameOverText;
+    public Text winText;
+    public GameObject restartButton;
 
     private bool gameOver;
     private bool restart;
+    private bool won;
 	private int score;
 	
     void Start()
     {
         gameOver = false;
         restart = false;
-        restartText.text = "";
+        won = false;
+        restartButton.SetActive(false);
         gameOverText.text = "";
-		score = 0;
+        winText.text = "";
+        score = 0;
 		UpdateScore();
         StartCoroutine (SpawnWaves());
     }
@@ -78,12 +86,27 @@ public class GameController : MonoBehaviour {
                 yield return new WaitForSeconds(spawnWait);
             }
             yield return new WaitForSeconds(waveWait);
+            if (spawnWait > .2)
+            {
+                spawnWait = spawnWait - (spawnWait/4);
+                Debug.Log(spawnWait);
+            }
+            UpdateLevel();
+            if (won == true)
+            {
+                break;
+            }
+            hazardCount = hazardCount + (hazardCount/2);
+            Debug.Log(hazardCount);
+
             if (gameOver)
             {
-                restartText.text = "Press 'R' for Restart";
+                //restartText.text = "Press 'R' for Restart";
+                restartButton.SetActive(true);
                 restart = true;
                 break;
             }
+            
         }
     }
 	
@@ -98,10 +121,39 @@ public class GameController : MonoBehaviour {
 		scoreText.text = "Score: " + score;
 	}
 
+    void UpdateLevel()
+    {
+        if (gameOver == false)
+        {
+            level = level + 1;
+            Debug.Log("Updating Level");
+            if (level == 11)
+            {
+                winText.text = "You've WON!!!";
+                won = true;
+                restartButton.SetActive(true);
+                gameOver = true;
+                restart = true;
+            }
+            else
+            {
+                levelText.text = "Level: " + level;
+            }
+        }
+    }
+
     public void GameOver ()
     {
         gameOverText.text = "Game Over!";
         gameOver = true;
+        restartButton.SetActive(true);
+        restart = true;
+    }
+
+    public void RestartGame ()
+    {
+        Debug.Log("Trying to restart game");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
 }

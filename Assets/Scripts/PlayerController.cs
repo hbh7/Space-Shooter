@@ -22,6 +22,14 @@ public class PlayerController : MonoBehaviour
     public float fireRate;
     private float nextFire;
 
+    private Quaternion calibrationQuaternion;
+
+    private void Start()
+    {
+        CalibrateAccelerometer();
+    } 
+
+
     private void Update()
     {
         if (Input.GetButton("Fire1") && Time.time > nextFire)
@@ -38,12 +46,61 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    void CalibrateAccelerometer ()
+    {
+        Vector3 accelerationSnapshot = Input.acceleration;
+        Quaternion rotationQuaternion = Quaternion.FromToRotation(new Vector3(0.0f, 0.0f, -1.0f), accelerationSnapshot);
+        calibrationQuaternion = Quaternion.Inverse(rotationQuaternion);
+    }
+
+    Vector3 FixAcceleration (Vector3 acceleration)
+    {
+        Vector3 fixedAcceleration = calibrationQuaternion * acceleration;
+        return fixedAcceleration;
+    }
+
     private void FixedUpdate()
     {
-        float moveHorizontal = Input.GetAxis("Horizontal");
-        float moveVertical = Input.GetAxis("Vertical");
+        Vector3 movement;
+        Vector3 accelerationRaw;
+        Vector3 acceleration;
+        float moveHorizontal;
+        float moveVertical;
 
-        Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
+#if UNITY_EDITOR
+        if (UnityEditor.EditorApplication.isRemoteConnected)
+        {
+            accelerationRaw = Input.acceleration;
+            acceleration = FixAcceleration(accelerationRaw);
+            movement = new Vector3(acceleration.x, 0.0f, acceleration.y);
+            //Debug.Log("REMOTE CONNECTED");
+        }
+        else
+        {
+            moveHorizontal = Input.GetAxis("Horizontal");
+            moveVertical = Input.GetAxis("Vertical");
+            movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
+            //Debug.Log("Remote not connected");
+            //Debug.Log(movement);
+        }
+#elif UNITY_ANDROID
+        accelerationRaw = Input.acceleration;
+        acceleration = FixAcceleration(accelerationRaw);
+        movement = new Vector3(acceleration.x, 0.0f, acceleration.y);
+        //Debug.Log("Android");
+#elif UNITY_STANDALONE
+        moveHorizontal = Input.GetAxis("Horizontal");
+        moveVertical = Input.GetAxis("Vertical");
+        movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
+        //Debug.Log("Standalone");
+#elif UNITY_WEBGL
+        moveHorizontal = Input.GetAxis("Horizontal");
+        moveVertical = Input.GetAxis("Vertical");
+        movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
+        //Debug.Log("WebGL");
+#endif
+
+        //Debug.Log(movement);
         rigidbody.velocity = movement * speed;
 
         rigidbody.position = new Vector3

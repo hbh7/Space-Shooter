@@ -22,7 +22,6 @@ public class EvasiveManeuver : MonoBehaviour {
     void Start ()
     {
         currentSpeed = rb.velocity.z;
-        Debug.Log(currentSpeed);
         StartCoroutine(Evade());
 	}
 

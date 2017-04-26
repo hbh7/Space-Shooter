@@ -12,9 +12,9 @@ public class MoverRollABall : MonoBehaviour {
         int[] Angles = new int[2] { Random.Range(-40, -20), Random.Range(20, 40) };
         int RandomIndex = Random.Range(0, 2);
 
-        Debug.Log(Angles);
-        Debug.Log(RandomIndex);
-        Debug.Log(Angles[RandomIndex]);
+        //Debug.Log(Angles);
+        //Debug.Log(RandomIndex);
+        //Debug.Log(Angles[RandomIndex]);
 
 
         transform.Rotate(0, Angles[RandomIndex], 0);
