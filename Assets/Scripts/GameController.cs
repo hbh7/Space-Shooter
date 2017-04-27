@@ -38,6 +38,7 @@ public class GameController : MonoBehaviour {
         score = 0;
 		UpdateScore();
         StartCoroutine (SpawnWaves());
+        Screen.SetResolution(600, 900, true);
     }
 
     private void Update()
@@ -49,6 +50,8 @@ public class GameController : MonoBehaviour {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
         }
+        if (Input.GetKey("escape"))
+            Application.Quit();
     }
 
     IEnumerator SpawnWaves ()
@@ -133,7 +136,7 @@ public class GameController : MonoBehaviour {
                 won = true;
                 restartButton.SetActive(true);
                 gameOver = true;
-                restart = true;
+                restart = true; 
             }
             else
             {
